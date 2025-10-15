@@ -11,7 +11,7 @@ Sigue los siguientes pasos para clonar e inicializar el proyecto en tu propio en
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone git@github.com:Edgar-Solano2001/Clain-web.git
+git clone git@github.com:Edgar-Solano2001/Claim-web.git
 cd Claim-web
 ```
 
