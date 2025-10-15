@@ -1,0 +1,45 @@
+import Image from "next/image";
+import { Card, CardContent } from "./card";
+import { Button } from "./button";
+
+interface FeaturedProductCardProps {
+    imageUrl: string;
+    title: string;
+    description: string;
+}
+
+export default function FeaturedProductCard({
+    imageUrl,
+    title,
+    description
+}: FeaturedProductCardProps) 
+
+{
+  return (
+    <Card className="rounded-2xl transition-all duration-300">
+      <CardContent>
+        <Image
+          src={imageUrl}
+          alt={title}
+          width={160}
+          height={200}
+          className="rounded-md border"
+        />
+
+        <h3 className="text-base sm:text-lg font-semibold">
+            {title}
+        </h3>
+
+        <p className="text-sm text-gray-300 text-center mt-2 line-clamp-2">
+            {description}
+        </p>
+
+        <Button variant="outline" className="mt-4">
+            Ver Mas
+        </Button>
+
+
+      </CardContent>
+    </Card>
+  );
+};
