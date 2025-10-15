@@ -1,7 +1,7 @@
-import Categories from "@/components/ui/Categories";
-import FeaturedProducts from "@/components/ui/FeaturedProducts";
-import Hero from "@/components/ui/Hero";
-import History from "@/components/ui/History";
+import Categories from "@/components/custom/Categories";
+import FeaturedProducts from "@/components/custom/FeaturedProducts";
+import Hero from "@/components/custom/Hero";
+import History from "@/components/custom/History";
 
 export default function Home() {
   return (

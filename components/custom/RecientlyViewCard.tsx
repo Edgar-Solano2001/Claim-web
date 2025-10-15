@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Button } from "./button";
-import { Card, CardContent } from "./card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface RecientlyViewCardProps{
     imageUrl: string;
