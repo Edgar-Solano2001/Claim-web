@@ -25,9 +25,7 @@ export default function RecientlyViewCard({imageUrl, title, description}: Recien
           <div className="flex flex-col items-start text-left flex-1">
             <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
             <p className="text-sm text-gray-300 mt-2">{description}</p>
-            <Button variant="outline" className="mt-4 border-black">
-              Ver Mas
-            </Button>
+            
           </div>
         </CardContent>
       </Card>

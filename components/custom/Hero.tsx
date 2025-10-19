@@ -20,9 +20,7 @@ export default function Hero() {
               oportunidades.
             </p>
 
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition">
-              Explorar Subastas
-            </button>
+            
           </div>
 
           {/* Carrusel */}
