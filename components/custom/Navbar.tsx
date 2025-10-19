@@ -18,12 +18,12 @@ export default function Navbar() {
             <Image
               src="/Claim_Logo.svg"
               alt="Subasta 1"
-              width={32}
-              height={32}
+              width={500}
+              height={500}
               className="w-8 h-8"
               priority
             />
-            <span className="mx-2 font-semibold text-lg">Claim</span>
+            <span className="mx-2 font-semibold text-lg">CLAIM</span>
           </Link>
 
           {/* Enlaces */}
