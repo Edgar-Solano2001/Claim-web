@@ -55,7 +55,7 @@ export default function Hero() {
 
               <SwiperSlide>
                 <Image
-                  src="/images/jugetes.jpg"
+                  src="/images/juguetes.jpg"
                   alt="Subasta 2"
                   width={800}
                   height={320}

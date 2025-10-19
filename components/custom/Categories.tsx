@@ -58,7 +58,7 @@ export default function Categories() {
                 priority
               />
               <p className="text-lg text-blue-600 dark:text-blue-300">
-                Jugetes
+                Juguetes
               </p>
             </div>
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">

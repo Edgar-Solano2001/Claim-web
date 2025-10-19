@@ -5,25 +5,25 @@ export default function FeaturedProducts() {
     const products = [
       {
         imageUrl: "/images/batman.jpg",
-        title: "Blue-Eyes White Dragon 25th Anniversary Edition",
+        title: "Figura de colección de Batman",
         description:
-          "Edición especial del legendario dragón blanco de ojos azules con sello holográfico.",
+          "Figura de coleccion especial de batman, con su soporte y certificado de autenticidad",
       },
       {
         imageUrl: "/images/mudi.jpg",
-        title: "Dark Magician Ultra Rare",
+        title: "Cuadro replica de Salvator Mundi",
         description:
-          "Tarjeta clásica de Yugioh en su versión Ultra Rare con arte conmemorativo.",
+          "Cuadro replica de 150cm x 150cm de Salvator Mundi ",
       },
       {
         imageUrl: "/images/messi.jpeg",
-        title: "Red-Eyes Black Dragon – Supreme Darkness",
+        title: "Autógrafo  del jugador Messi",
         description:
-          "Tarjeta de colección exclusiva con relieve brillante y fondo alternativo.",
+          "Hoja con autógrafo del jugador Messi, en tinta azul de tamaño 10cm x 10cm",
       },
       {
         imageUrl: "/images/obelisk.jpg",
-        title: "Obelisk the Tormentor 25th Edition",
+        title: "Carta Obelisk the Tormentor 25th Edition",
         description:
           "Una de las tres cartas de dios egipcio en su versión aniversario.",
       },
