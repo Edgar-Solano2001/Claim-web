@@ -5,7 +5,7 @@ export default function History() {
 
   const cards = [
     {
-      imageUrl: "/images/primite-dragon.jpg",
+      imageUrl: "/images/beryl.jpg",
       title:
         "Yugioh! Primite Dragon Ether Beryl Suda-en015 1st Edi Ultra Inglés",
       description:
@@ -13,7 +13,13 @@ export default function History() {
     },
 
     {
-      imageUrl: "/images/divine-arsenal.jpg",
+      imageUrl: "/images/zeus.jpg",
+      title: "Divine Arsenal AA Zeus 25th Anniversary Edition",
+      description:
+        "Tarjeta de Yugioh de rareza 25th Anniversary de la expansion Stampede"
+    },
+    {
+      imageUrl: "/images/zeus.jpg",
       title: "Divine Arsenal AA Zeus 25th Anniversary Edition",
       description:
         "Tarjeta de Yugioh de rareza 25th Anniversary de la expansion Stampede"

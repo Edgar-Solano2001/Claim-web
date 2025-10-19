@@ -44,7 +44,7 @@ export default function Hero() {
             >
               <SwiperSlide>
                 <Image
-                  src="/file.svg"
+                  src="/images/arte.jpg"
                   alt="Subasta 1"
                   width={800}
                   height={320}
@@ -55,7 +55,7 @@ export default function Hero() {
 
               <SwiperSlide>
                 <Image
-                  src="/globe.svg"
+                  src="/images/jugetes.jpg"
                   alt="Subasta 2"
                   width={800}
                   height={320}
@@ -66,7 +66,7 @@ export default function Hero() {
 
               <SwiperSlide>
                 <Image
-                  src="/vercel.svg"
+                  src="/images/cartas.jpg"
                   alt="Subasta 3"
                   width={800}
                   height={320}

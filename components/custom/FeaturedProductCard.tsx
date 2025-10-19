@@ -23,14 +23,14 @@ export default function FeaturedProductCard({
           alt={title}
           width={160}
           height={200}
-          className="rounded-md border"
+          className="rounded-md border w-64 h-64"
         />
 
         <h3 className="text-base sm:text-lg font-semibold">
             {title}
         </h3>
 
-        <p className="text-sm text-gray-300 text-center mt-2 line-clamp-2">
+        <p className="text-sm text-gray-600 text-center mt-2 line-clamp-2">
             {description}
         </p>
 

@@ -13,7 +13,7 @@ export default function Categories() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">
               <Image
-                src="/Claim_Logo.png"
+                src="/images/arte.jpg"
                 alt="Subasta 1"
                 width={64}
                 height={64}
@@ -24,7 +24,7 @@ export default function Categories() {
             </div>
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">
               <Image
-                src="/Claim_Logo.png"
+                src="/images/autos.jpg"
                 alt="Subasta 1"
                 width={64}
                 height={64}
@@ -37,7 +37,7 @@ export default function Categories() {
             </div>
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">
               <Image
-                src="/Claim_Logo.png"
+                src="/images/cartas.jpg"
                 alt="Subasta 1"
                 width={64}
                 height={64}
@@ -50,7 +50,7 @@ export default function Categories() {
             </div>
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">
               <Image
-                src="/Claim_Logo.png"
+                src="/images/jugetes.jpg"
                 alt="Subasta 1"
                 width={64}
                 height={64}
@@ -63,7 +63,7 @@ export default function Categories() {
             </div>
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">
               <Image
-                src="/Claim_Logo.png"
+                src="/images/reliquias.jpg"
                 alt="Subasta 1"
                 width={64}
                 height={64}
@@ -76,7 +76,7 @@ export default function Categories() {
             </div>
             <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-md p-4 flex flex-col items-center">
               <Image
-                src="/Claim_Logo.png"
+                src="/images/joyeria.jpg"
                 alt="Subasta 1"
                 width={64}
                 height={64}
@@ -87,9 +87,6 @@ export default function Categories() {
                 Joyeria
               </p>
             </div>
-
-            <CategorieCard/>
-            <CategorieCard/>
 
 
           </div>

@@ -4,19 +4,19 @@ export default function FeaturedProducts() {
 
     const products = [
       {
-        imageUrl: "/images/blue-eyes.jpg",
+        imageUrl: "/images/batman.jpg",
         title: "Blue-Eyes White Dragon 25th Anniversary Edition",
         description:
           "Edición especial del legendario dragón blanco de ojos azules con sello holográfico.",
       },
       {
-        imageUrl: "/images/dark-magician.jpg",
+        imageUrl: "/images/mudi.jpg",
         title: "Dark Magician Ultra Rare",
         description:
           "Tarjeta clásica de Yugioh en su versión Ultra Rare con arte conmemorativo.",
       },
       {
-        imageUrl: "/images/red-eyes.jpg",
+        imageUrl: "/images/messi.jpeg",
         title: "Red-Eyes Black Dragon – Supreme Darkness",
         description:
           "Tarjeta de colección exclusiva con relieve brillante y fondo alternativo.",
