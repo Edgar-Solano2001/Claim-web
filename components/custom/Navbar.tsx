@@ -16,7 +16,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/Claim_Logo.png"
+              src="/Claim_Logo.svg"
               alt="Subasta 1"
               width={32}
               height={32}
@@ -46,11 +46,13 @@ export default function Navbar() {
           </div>
 
           {/* Botón */}
-          <div className="hidden md:flex">
+          <div className="hidden md:flex space-x-2">
             <Button variant="default" className="text-sm">
               Iniciar Sesión
             </Button>
+            <Button variant="secondary">Registrar</Button>
           </div>
+          
 
           {/* Menú móvil */}
           <div className="md:hidden flex items-center">
