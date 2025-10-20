@@ -26,31 +26,37 @@ export default function Navbar() {
             <span className="mx-2 font-semibold text-lg text-purple-700 dark:text-purple-200">CLAIM</span>
           </Link>
 
-          {/* Enlaces */}
-          <div className="hidden md:flex space-x-6">
-            <Link href="/" className="text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-900 dark:hover:text-purple-400 transition-colors">
-              Inicio
-            </Link>
-            <Link
-              href="/subastas"
-              className="text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-900 dark:hover:text-purple-400 transition-colors"
-            >
-              Mis Pujas
-            </Link>
-            <Link
-              href="/categorias"
-              className="text-sm font-medium hover:text-primary text-underline"
-            >
-              Categorías
-            </Link>
-          </div>
+          {/* Contenedor único a la derecha: Links + Botones */}
+          <div className="hidden md:flex items-center ml-auto">
+            <div className="flex items-center space-x-6 mr-4">
+              <Link href="/" className="text-sm font-medium hover:text-primary">
+                Inicio
+              </Link>
+              <Link
+                href="/subastas"
+                className="text-sm font-medium hover:text-primary"
+              >
+                Mis Pujas
+              </Link>
+              <Link
+                href="/categorias"
+                className="text-sm font-medium hover:text-primary text-underline"
+              >
+                Categorías
+              </Link>
+            </div>
 
-          {/* Botón */}
-          <div className="hidden md:flex space-x-2">
-            <Button variant="default" className="text-sm bg-purple-500 text-white hover:bg-purple-700">
-              Iniciar Sesión
-            </Button>
-            <Button variant="secondary" className="bg-purple-300 text-purple-900 hover:bg-purple-400 hover:text-purple-950">Registrar</Button>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="default"
+                className="text-sm bg-purple-500 hover:bg-purple-800 rounded-lg p-2"
+              >
+                Iniciar Sesión
+              </Button>
+              <Button variant="secondary" className="text-sm">
+                Registrar
+              </Button>
+            </div>
           </div>
 
           {/* Menú móvil */}
@@ -59,11 +65,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               className="text-[#7033ff] dark:text-zinc-300"
             >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -91,13 +93,21 @@ export default function Navbar() {
             >
               Categorías
             </Link>
-            <Button variant="default" className="w-full text-sm bg-purple-500 text-white hover:bg-purple-700">
-              Iniciar Sesion
-            </Button>
+            {/* Botones */}
+            <div className="w-full space-x-2">
+              <Button
+                variant="default"
+                className="w-full text-sm m-2 bg-purple-500 border-2 hover:bg-purple-800 "
+              >
+                Iniciar Sesión
+              </Button>
+              <Button variant="secondary" className="w-full text-sm">
+                Registrar
+              </Button>
+            </div>
           </div>
         </div>
       )}
     </nav>
-  );
+  )
 }
-

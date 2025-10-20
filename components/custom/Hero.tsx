@@ -49,8 +49,8 @@ export default function Hero() {
                 <Image
                   src="/images/arte.jpg"
                   alt="Subasta 1"
-                  width={800}
-                  height={320}
+                  width={900}
+                  height={4000}
                   className="w-full h-80 object-cover"
                   priority
                 />

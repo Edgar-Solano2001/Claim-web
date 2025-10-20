@@ -26,12 +26,12 @@ export default function CategorieCard({ categorie }: ProductCardProps) {
           />
         </CardHeader>
         <CardContent>
-          <Link
+        <Link
             href="/"
-            className="block w-full text-center text-lg font-medium hover:underline"
-          >
+            className="block w-full text-center text-lg font-medium tracking-normal capitalize first-letter:text-xl first-letter:font-semibold transition-opacity duration-200 hover:opacity-95"
+        >
             {categorie.title}
-          </Link>
+        </Link>
         </CardContent>
       </Card>
     </>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import CategorieCard from "./CategorieCard";
+import { div } from "framer-motion/client";
 
 export default function Categories() {
     return (
@@ -93,4 +94,4 @@ export default function Categories() {
         </div>
       </>
     );
-};
+}
