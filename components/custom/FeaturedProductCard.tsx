@@ -16,7 +16,7 @@ export default function FeaturedProductCard({
 
 {
   return (
-    <Card className="rounded-2xl transition-all duration-300">
+    <Card className="rounded-2xl transition-all duration-300 cursor-pointer hover:scale-105">
       <CardContent>
         <Image
           src={imageUrl}

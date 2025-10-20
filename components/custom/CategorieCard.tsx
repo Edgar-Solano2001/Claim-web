@@ -9,7 +9,7 @@ export default function CategorieCard() {
                                 alt="Subasta 1"
                                 width={64}
                                 height={64}
-                                className="w-24 h-24 m-4"
+                                className="w-16 h-16 m-4"
                                 priority
                               />
                               <p className="text-lg text-blue-600 dark:text-blue-300">Arte</p>

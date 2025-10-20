@@ -16,9 +16,7 @@ export default function Home() {
       {/** Apartado de categorias*/}
       <Categories />
 
-      {/** Apartado de historial */}
-      <History />
-      {/** Apartado de historial */}
+      {/** Apartado de preguntas frecuentes */}
       <FAQ />
     </>
   );

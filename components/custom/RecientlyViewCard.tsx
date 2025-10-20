@@ -18,14 +18,14 @@ export default function RecientlyViewCard({imageUrl, title, description}: Recien
               alt={title}
               width={100}
               height={140}
-              className="rounded-md border border-purple-400/40"
+              className="rounded-md border border-purple-400"
             />
           </div>
 
           <div className="flex flex-col items-start text-left flex-1">
-            <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
-            <p className="text-sm text-gray-300 mt-2">{description}</p>
-            <Button variant="outline" className="mt-4 border-black">
+            <h3 className="text-lg sm:text-xl font-semibold text-purple-700 dark:text-purple-200">{title}</h3>
+            <p className="text-sm text-purple-600 dark:text-purple-300 mt-2">{description}</p>
+            <Button variant="outline" className="mt-4 border-purple-500 cursor-pointer">
               Ver Mas
             </Button>
           </div>

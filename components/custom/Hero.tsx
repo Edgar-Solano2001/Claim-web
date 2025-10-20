@@ -6,21 +6,21 @@ import Image from "next/image";
 export default function Hero() {
 
     return (
-      <section className="relative bg-gray-900 text-white py-16 px-6 lg:px-16">
+      <section className="relative bg-purple-950 text-purple-50 py-16 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
           {/* Texto */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">
-              Bienvenido a <span className="text-blue-400">Claim</span>
+              Bienvenido a <span className="text-purple-400">Claim</span>
             </h1>
 
-            <p className="text-lg text-gray-300">
+            <p className="text-lg text-purple-200">
               Participa en subastas en tiempo real y consigue los mejores
               productos al mejor precio. Empieza a pujar ahora y gana grandes
               oportunidades.
             </p>
 
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition">
+            <button className="bg-purple-500 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition">
               Explorar Subastas
             </button>
           </div>
