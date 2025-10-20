@@ -39,7 +39,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/categorias"
-              className="text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-900 dark:hover:text-purple-400 transition-colors"
+              className="text-sm font-medium hover:text-primary text-underline"
             >
               Categorías
             </Link>
@@ -52,13 +52,12 @@ export default function Navbar() {
             </Button>
             <Button variant="secondary" className="bg-purple-300 text-purple-900 hover:bg-purple-400 hover:text-purple-950">Registrar</Button>
           </div>
-          
 
           {/* Menú móvil */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-purple-700 dark:text-purple-200"
+              className="text-[#7033ff] dark:text-zinc-300"
             >
               {isOpen ? (
                 <X className="h-6 w-6" />

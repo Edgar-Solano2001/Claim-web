@@ -1,6 +1,9 @@
 'use client';
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import Image from "next/image";
 
 export default function Hero() {
@@ -11,7 +14,7 @@ export default function Hero() {
           {/* Texto */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">
-              Bienvenido a <span className="text-purple-400">Claim</span>
+              Bienvenido a <span className="text-blue-400">Claim</span>
             </h1>
 
             <p className="text-lg text-purple-200">
@@ -20,7 +23,7 @@ export default function Hero() {
               oportunidades.
             </p>
 
-            <button className="bg-purple-500 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition">
               Explorar Subastas
             </button>
           </div>
