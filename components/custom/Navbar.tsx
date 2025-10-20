@@ -39,7 +39,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/categorias"
-              className="text-sm font-medium hover:text-primary"
+              className="text-sm font-medium hover:text-primary text-underline"
             >
               Categorías
             </Link>
@@ -52,13 +52,12 @@ export default function Navbar() {
             </Button>
             <Button variant="secondary">Registrar</Button>
           </div>
-          
 
           {/* Menú móvil */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-zinc-700 dark:text-zinc-300"
+              className="text-[#7033ff] dark:text-zinc-300"
             >
               {isOpen ? (
                 <X className="h-6 w-6" />
