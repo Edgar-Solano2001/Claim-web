@@ -12,28 +12,31 @@ interface ProductCardProps {
 }
 
 export default function CategorieCard({ categorie }: ProductCardProps) {
-  return (
-    <>
-      <Card className="w-auto group hover:-translate-y-2 transition-transform duration-300 ease-out hover:shadow-lg">
-        <CardHeader className="px-4 overflow-hidden rounded-md">
-          <Image
-            src={categorie.urlImage}
-            alt={categorie.title}
-            width={160}
-            height={160}
-            className="h-50 w-full object-cover rounded-md transform transition-transform duration-300 ease-out hover:shadow-lg"
-            priority
-          />
-        </CardHeader>
-        <CardContent>
-        <Link
-            href="/"
-            className="block w-full text-center text-lg font-medium tracking-normal capitalize first-letter:text-xl first-letter:font-semibold transition-opacity duration-200 hover:opacity-95"
-        >
-            {categorie.title}
-        </Link>
-        </CardContent>
-      </Card>
-    </>
-  );
+    return (
+      <>
+        <Card className="w-auto rounded-4xl group hover:-translate-y-2 transition-transform duration-300 ease-out hover:shadow-lg">
+          <CardHeader className="px-4 overflow-hidden rounded-md">
+            <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden rounded-md">
+              <Image
+                src={categorie.urlImage}
+                alt={categorie.title}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className=" rounded-4xl object-cover w-full h-full transform transition-transform duration-300 ease-out hover:shadow-lg"
+                quality={100}
+                priority
+              />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Link
+              href="/"
+              className="block w-full text-center text-lg font-bold hover:underline text-purple-800 dark:text-blue-300"
+            >
+              {categorie.title}
+            </Link>
+          </CardContent>
+        </Card>
+      </>
+    );
 }

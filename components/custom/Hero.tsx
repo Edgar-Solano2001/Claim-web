@@ -9,12 +9,12 @@ import Image from "next/image";
 export default function Hero() {
 
     return (
-      <section className="relative bg-purple-950 text-white py-16 px-6 lg:px-16">
+      <section className="relative bg-gray-950 text-white py-16 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
           {/* Texto */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">
-              Bienvenido a <span className="text-purple-700">Claim</span>
+              Bienvenido a <span className="text-purple-200">Claim</span>
             </h1>
 
             <p className="text-lg text-purple-300">
@@ -47,8 +47,8 @@ export default function Hero() {
             >
               <SwiperSlide>
                 <Image
-                  src="/images/arte.jpg"
-                  alt="Subasta 1"
+                  src="/images/banner1.jpg"
+                  alt="Banner1"
                   width={900}
                   height={4000}
                   className="w-full h-80 object-cover"
@@ -58,8 +58,8 @@ export default function Hero() {
 
               <SwiperSlide>
                 <Image
-                  src="/images/juguetes.jpg"
-                  alt="Subasta 2"
+                  src="/images/banner2.jpg"
+                  alt="Banner2"
                   width={800}
                   height={320}
                   className="w-full h-80 object-cover"
@@ -69,8 +69,8 @@ export default function Hero() {
 
               <SwiperSlide>
                 <Image
-                  src="/images/cartas.jpg"
-                  alt="Subasta 3"
+                  src="/images/banner3.jpg"
+                  alt="Banner3"
                   width={800}
                   height={320}
                   className="w-full h-80 object-cover"
