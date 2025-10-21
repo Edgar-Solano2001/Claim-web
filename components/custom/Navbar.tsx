@@ -23,14 +23,21 @@ export default function Navbar() {
             aria-label="Ir al inicio"
           >
             <Image
-              src="/Claim_Logo.svg"
+              src="/Claim_Logotipo_Cortado.svg"
               alt="Claim logo"
-              width={500}
-              height={500}
-              className="w-8 h-8"
+              width={48}
+              height={48}
+              className="w-15 h-15"
               priority
             />
-            <span className="mx-2 font-semibold text-lg">CLAIM</span>
+            <Image
+              src="/Claim_Nombre.svg"
+              alt="Claim logo"
+              width={48}
+              height={48}
+              className="w-20 h-15"
+              priority
+            />
           </Link>
 
           {/* Contenedor derecho: Enlaces + Botones */}
