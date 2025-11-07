@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import Link from "next/link";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav
@@ -66,12 +66,14 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center space-x-2">
+              <Link href="/Login" >
               <Button
                 variant="default"
                 className="text-sm bg-purple-900 text-white hover:bg-purple-700 focus:ring-2 focus:ring-purple-300"
               >
                 Iniciar Sesión
               </Button>
+              </Link>
               <Button
                 variant="secondary"
                 className="text-sm bg-purple-200 text-purple-900 hover:bg-purple-300 focus:ring-2 focus:ring-purple-300"
@@ -89,7 +91,11 @@ export default function Navbar() {
               aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
               className="text-purple-700 dark:text-purple-200 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-300"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -119,10 +125,19 @@ export default function Navbar() {
             </Link>
 
             <div className="pt-2 border-t border-purple-100 dark:border-purple-800">
-              <Button variant="default" className="w-full mb-2 text-sm bg-purple-900 text-white hover:bg-purple-700">
-                Iniciar Sesión
-              </Button>
-              <Button variant="secondary" className="w-full text-sm bg-purple-200 text-purple-900 hover:bg-purple-300">
+              <Link href="/Login/login" >
+                <Button
+                  variant="default"
+                  className="w-full mb-2 text-sm bg-purple-900 text-white hover:bg-purple-700"
+                >
+                  Iniciar Sesión
+                </Button>
+              </Link>
+
+              <Button
+                variant="secondary"
+                className="w-full text-sm bg-purple-200 text-purple-900 hover:bg-purple-300"
+              >
                 Registrar
               </Button>
             </div>
@@ -130,5 +145,5 @@ export default function Navbar() {
         </div>
       )}
     </nav>
-  )
+  );
 }
