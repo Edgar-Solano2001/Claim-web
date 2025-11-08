@@ -4,24 +4,36 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app } from "../lib/firebase"; // ← Aquí importas la configuración de Firebase
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Aquí iría tu lógica real de autenticación (Firebase, API, etc.)
-    if (email === "admin@example.com" && password === "1234") {
+    const auth = getAuth(app);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       alert("✅ Inicio de sesión exitoso");
-    } else {
-      alert("❌ Credenciales incorrectas");
+      router.push("/"); // Redirige al inicio o donde desees
+    } catch (error: any) {
+      console.error(error);
+      alert("❌ Error al iniciar sesión: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-purple-700 animate-gradient">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-300 via-purple-400 to-purple-600 animate-gradient">
       <Card className="w-full max-w-md shadow-2xl border-none rounded-3xl bg-white/10 backdrop-blur-lg">
         <CardHeader>
           <CardTitle className="text-center text-4xl font-bold text-white tracking-wider">
@@ -34,7 +46,7 @@ export default function Login() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-purple-100  "
+                className="block text-sm font-medium text-purple-100"
               >
                 Correo electrónico
               </label>
@@ -67,27 +79,21 @@ export default function Login() {
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm text-purple-100">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" className="accent-purple-400" />
-                <span>Recuérdame</span>
-              </label>
-              <a href="#" className="hover:underline hover:text-purple-200">
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
-
             <Button
               type="submit"
+              disabled={loading}
               className="w-full bg-white text-purple-700 font-semibold text-lg rounded-full py-6 hover:bg-purple-100 transition-all duration-200"
             >
-              Iniciar Sesión
+              {loading ? "Cargando..." : "Iniciar Sesión"}
             </Button>
           </form>
 
           <p className="text-center text-sm text-purple-100 mt-6">
             ¿No tienes cuenta?{" "}
-            <a href="/register" className="underline font-semibold hover:text-purple-200">
+            <a
+              href="/register"
+              className="underline font-semibold hover:text-purple-200"
+            >
               Regístrate
             </a>
           </p>
