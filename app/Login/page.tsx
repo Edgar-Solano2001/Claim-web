@@ -4,8 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from "../lib/firebase"; // ← Aquí importas la configuración de Firebase
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { app } from "../lib/firebase"; // ← Importa tu config de Firebase
 import { useRouter } from "next/navigation";
 
 export default function Login() {
@@ -14,21 +19,33 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const auth = getAuth(app);
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("✅ Inicio de sesión exitoso");
-      router.push("/"); // Redirige al inicio o donde desees
+      router.push("/"); // Redirige al inicio
     } catch (error: any) {
       console.error(error);
       alert("❌ Error al iniciar sesión: " + error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      alert("✅ Sesión iniciada con Google");
+      router.push("/"); // Redirige al inicio o donde desees
+    } catch (error: any) {
+      console.error(error);
+      alert("❌ Error al iniciar con Google: " + error.message);
     }
   };
 
@@ -87,6 +104,21 @@ export default function Login() {
               {loading ? "Cargando..." : "Iniciar Sesión"}
             </Button>
           </form>
+
+          <div className="mt-6 flex flex-col items-center gap-3">
+            <p className="text-purple-100">o</p>
+            <Button
+              onClick={handleGoogleLogin}
+              className="w-full bg-white text-purple-700 font-semibold text-lg rounded-full py-6 hover:bg-purple-100 transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <img
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
+              Continuar con Google
+            </Button>
+          </div>
 
           <p className="text-center text-sm text-purple-100 mt-6">
             ¿No tienes cuenta?{" "}
