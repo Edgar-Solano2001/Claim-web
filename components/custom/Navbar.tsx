@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isSignupPage = pathname === '/Signup';
 
   return (
     <nav
@@ -74,12 +78,16 @@ export default function Navbar() {
                 Iniciar Sesión
               </Button>
               </Link>
-              <Button
-                variant="secondary"
-                className="text-sm bg-purple-200 text-purple-900 hover:bg-purple-300 focus:ring-2 focus:ring-purple-300"
-              >
-                Registrar
-              </Button>
+              {!isSignupPage && (
+                <Link href="/Signup">
+                  <Button
+                    variant="secondary"
+                    className="text-sm bg-purple-200 text-purple-900 hover:bg-purple-300 focus:ring-2 focus:ring-purple-300"
+                  >
+                    Registrar
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -134,12 +142,16 @@ export default function Navbar() {
                 </Button>
               </Link>
 
-              <Button
-                variant="secondary"
-                className="w-full text-sm bg-purple-200 text-purple-900 hover:bg-purple-300"
-              >
-                Registrar
-              </Button>
+              {!isSignupPage && (
+                <Link href="/Signup">
+                  <Button
+                    variant="secondary"
+                    className="w-full text-sm bg-purple-200 text-purple-900 hover:bg-purple-300"
+                  >
+                    Registrar
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
