@@ -3,9 +3,10 @@
 import React, { useState } from 'react'
 import Image from "next/image";
 import toast from 'react-hot-toast';
-import { auth } from '@/lib/firebase-config';
+import { auth, db } from '@/lib/firebase-config';
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -43,14 +44,15 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       
       toast.success('Inicio de sesión exitoso');
+      //Actualizar la propiedad lastLogin del usuario
+      await updateDoc(doc(db, 'users', auth.currentUser?.uid || ''), {
+        lastLogin: serverTimestamp()
+      });
       router.push('/');
       
     } catch (error: any) {
       console.error('Error login:', error.code);
-      
-      // Traducimos el error para el usuario
       let msg = 'Error al iniciar sesión. Verifique sus datos.';
-      
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         msg = 'Correo electrónico o contraseña incorrectos.';
       } else if (error.code === 'auth/too-many-requests') {
@@ -94,7 +96,6 @@ export default function Login() {
             </div>
           )}
 
-          {/* IMPORTANTE: onSubmit va en el form, no en el botón */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col text-left gap-1">
               <label htmlFor="email" className="text-sm font-medium text-slate-700">Correo electrónico</label>

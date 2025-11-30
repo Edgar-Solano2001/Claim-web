@@ -43,7 +43,6 @@ export default function Signup() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError('');
-    const { termsAccepted, conditionsAccepted } = formData;
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
