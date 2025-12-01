@@ -10,26 +10,47 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { app } from "../lib/firebase"; // ← Importa tu config de Firebase
+
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
+import { app } from "../lib/firebase";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
+  const router = useRouter();
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
+  // 🔥 FUNCIÓN PARA VERIFICAR ROL EN FIRESTORE
+  const checkUserRole = async (uid: string) => {
+    const ref = doc(db, "users", uid);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) return null;
+    return snap.data().role;
+  };
+
+  // 🔐 LOGIN CON EMAIL
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("✅ Inicio de sesión exitoso");
-      router.push("/"); // Redirige al inicio
+      const result = await signInWithEmailAndPassword(auth, email, password);
+
+      const uid = result.user.uid;
+      const role = await checkUserRole(uid);
+
+      if (role === "admin") {
+        router.push("/dashboard"); // 🔥 Redirección admin
+      } else {
+        router.push("/"); // Usuario normal
+      }
     } catch (error: any) {
       console.error(error);
       alert("❌ Error al iniciar sesión: " + error.message);
@@ -38,11 +59,19 @@ export default function Login() {
     }
   };
 
+  // 🔐 LOGIN CON GOOGLE
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, provider);
-      alert("✅ Sesión iniciada con Google");
-      router.push("/"); // Redirige al inicio o donde desees
+      const result = await signInWithPopup(auth, provider);
+
+      const uid = result.user.uid;
+      const role = await checkUserRole(uid);
+
+      if (role === "admin") {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+      }
     } catch (error: any) {
       console.error(error);
       alert("❌ Error al iniciar con Google: " + error.message);
@@ -61,14 +90,10 @@ export default function Login() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-purple-100"
-              >
+              <label className="block text-sm font-medium text-purple-100">
                 Correo electrónico
               </label>
               <Input
-                id="email"
                 type="email"
                 placeholder="correo@ejemplo.com"
                 value={email}
@@ -79,14 +104,10 @@ export default function Login() {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-purple-100"
-              >
+              <label className="block text-sm font-medium text-purple-100">
                 Contraseña
               </label>
               <Input
-                id="password"
                 type="password"
                 placeholder="••••••••"
                 value={password}
@@ -107,6 +128,7 @@ export default function Login() {
 
           <div className="mt-6 flex flex-col items-center gap-3">
             <p className="text-purple-100">o</p>
+
             <Button
               onClick={handleGoogleLogin}
               className="w-full bg-white text-purple-700 font-semibold text-lg rounded-full py-6 hover:bg-purple-100 transition-all duration-200 flex items-center justify-center gap-2"
@@ -131,24 +153,6 @@ export default function Login() {
           </p>
         </CardContent>
       </Card>
-
-      <style jsx>{`
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 6s ease infinite;
-        }
-      `}</style>
     </div>
   );
 }

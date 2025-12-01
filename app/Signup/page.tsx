@@ -1,8 +1,12 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "../../app/lib/firebase";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/app/lib/firebase";
+console.log("Firestore:", db);
+
+
 
 
 // app/sign-up/page.tsx
@@ -60,6 +64,21 @@ export default function SignUpPage() {
         email,
         password
       );
+      // Guardar al usuario automáticamente en Firestore
+      console.log("UID del usuario:", userCredential.user.uid);
+console.log("Guardando en Firestore...");
+
+try {
+  await setDoc(doc(db, "users", userCredential.user.uid), {
+    name,
+    email,
+    role: "user",
+    createdAt: new Date(),
+  });
+} catch (e) {
+  console.error("Error guardando en Firestore:", e);
+}
+
       console.log("Usuario creado", userCredential.user);
       setIsSuccess(true);
 
@@ -111,7 +130,7 @@ export default function SignUpPage() {
     setErrorMessage(null);
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithRedirect(auth, provider);
       console.log("Usuario de Google", result.user);
       setIsSuccess(true);
     } catch (error: any) {
@@ -390,6 +409,6 @@ export default function SignUpPage() {
   );
 }
 
-function handleError(message: any) {
-    throw new Error("Function not implemented.");
+function handleError(error: any) {
+  console.error("Firebase error:", error);
 }
