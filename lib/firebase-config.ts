@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { FirebaseApp, getApps, initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getApps, initializeApp } from "firebase/app";
 import { browserLocalPersistence, browserSessionPersistence, getAuth, setPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
