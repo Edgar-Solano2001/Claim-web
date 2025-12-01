@@ -5,61 +5,78 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import UserCard from "@/components/dashboard/UserCard";
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
-
+import { db } from "@/app/lib/firebase";
 
 interface UserData {
   id: string;
   name: string;
   email: string;
-  img: string;
+  img?: string;       // puede ser undefined
   blocked: boolean;
 }
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Obtener usuarios de Firestore
   useEffect(() => {
     const fetchUsers = async () => {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const usersData: UserData[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data() as any;
-        usersData.push({
-          id: doc.id,
-          name: data.name,
-          email: data.email,
-          img: data.img || "https://i.pravatar.cc/150",
-          blocked: data.blocked || false,
+      setIsLoading(true);
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const usersData: UserData[] = [];
+
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data() as any;
+
+          usersData.push({
+            id: docSnap.id,
+            name: data.displayName || data.username || "Usuario sin nombre",
+            email: data.email || "Sin correo",
+            img: data.photoURL || undefined,   // ⬅ no usar imágenes aleatorias
+            blocked: data.isActive === false,
+          });
         });
-      });
-      setUsers(usersData);
+
+        setUsers(usersData);
+      } catch (err) {
+        console.error("Error al cargar usuarios:", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
+
     fetchUsers();
   }, []);
 
-  // Filtrar usuarios por búsqueda
-  const filteredUsers = users.filter((u) =>
-    u.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (u) =>
+      u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const displayCount = (n: number) => (isLoading ? "..." : n);
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Contenido principal */}
       <main className="flex-1 bg-[#15203a] text-white p-10">
         <h1 className="text-3xl font-bold mb-6">Gestión de Usuarios</h1>
 
-        {/* Estadísticas rápidas */}
+        {/* Stats */}
         <div className="flex gap-5 mb-10">
-          <StatsCard icon="👤" number={users.length} label="Usuarios Registrados" />
+          <StatsCard
+            icon="👤"
+            number={displayCount(users.length)}
+            label="Usuarios Registrados"
+          />
           <StatsCard
             icon="⛔"
-            number={users.filter((u) => u.blocked).length}
-            label="Usuarios Bloqueados"
+            number={displayCount(users.filter((u) => u.blocked).length)}
+            label="Usuarios Bloqueados/Inactivos"
           />
         </div>
 
@@ -76,14 +93,25 @@ export default function UsersPage() {
 
         {/* Lista de usuarios */}
         <div className="grid grid-cols-2 gap-6">
-          {filteredUsers.map((user) => (
-            <UserCard
-              key={user.id}
-              name={user.name}
-              desc={user.email}
-              img={user.img}
-            />
-          ))}
+          {isLoading ? (
+            <p className="col-span-2 text-center text-gray-400">
+              Cargando usuarios...
+            </p>
+          ) : filteredUsers.length === 0 ? (
+            <p className="col-span-2 text-center text-gray-400">
+              No se encontraron usuarios.
+            </p>
+          ) : (
+            filteredUsers.map((user) => (
+              <UserCard
+                key={user.id}
+                userId={user.id}     // ⬅ **CORREGIDO**
+                name={user.name}
+                desc={user.email}
+                img={user.img}       // ⬅ usa photoURL real
+              />
+            ))
+          )}
         </div>
       </main>
     </div>

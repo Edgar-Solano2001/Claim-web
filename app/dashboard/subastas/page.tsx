@@ -3,27 +3,62 @@
 import Sidebar from "@/components/dashboard/Sidebar";
 import StatsCard from "@/components/dashboard/StatsCard";
 import AuctionCard from "@/components/dashboard/AuctionCard";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/app/lib/firebase";
+
+// Interface para subastas reales
+interface AuctionData {
+  id: string;
+  title: string;
+  currentPrice: number;
+  imageUrl: string;
+  status: "active" | "pending" | "finished";
+}
 
 export default function SubastasPage() {
   const router = useRouter();
 
-  const [auctions, setAuctions] = useState([
-    { id: "1", title: "Figura Batman", price: "$500", img: "https://m.media-amazon.com/images/I/61e0H7o1tDL.jpg", status: "Activa" },
-    { id: "2", title: "Carta YuGiOh", price: "$300", img: "https://i.ebayimg.com/images/g/AAkAAOSw7rtiGOUY/s-l1600.jpg", status: "Pendiente" },
-    { id: "3", title: "Figura Iron Man", price: "$800", img: "https://i.ebayimg.com/images/g/ZZZZZZ/s-l1600.jpg", status: "Finalizada" },
-  ]);
+  const [auctions, setAuctions] = useState<AuctionData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [requests, setRequests] = useState([
-    { id: "4", title: "Subasta de Mario Kart", price: "$150", img: "https://i.ebayimg.com/images/g/YYYYYY/s-l1600.jpg" },
-    { id: "5", title: "Subasta de Pokémon", price: "$200", img: "https://i.ebayimg.com/images/g/XXXXXa/s-l1600.jpg" },
-  ]);
+  useEffect(() => {
+    const loadAuctions = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "auctions"));
 
+        const auctionList: AuctionData[] = [];
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as any;
+
+          auctionList.push({
+            id: doc.id,
+            title: data.title || "Sin título",
+            currentPrice: data.currentPrice || 0,
+            imageUrl: data.imageUrl || "https://via.placeholder.com/300",
+            status: data.status || "pending",
+          });
+        });
+
+        setAuctions(auctionList);
+      } catch (error) {
+        console.error("Error loading auctions:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAuctions();
+  }, []);
+
+  // Estadísticas reales
   const stats = {
-    Activas: auctions.filter(a => a.status === "Activa").length,
-    Pendientes: auctions.filter(a => a.status === "Pendiente").length,
-    Finalizadas: auctions.filter(a => a.status === "Finalizada").length,
+    Activas: auctions.filter(a => a.status === "active").length,
+    Pendientes: auctions.filter(a => a.status === "pending").length,
+    Finalizadas: auctions.filter(a => a.status === "finished").length,
   };
 
   return (
@@ -41,33 +76,29 @@ export default function SubastasPage() {
 
         {/* Listado de Subastas */}
         <h2 className="text-2xl font-bold mt-10">Listado de Subastas</h2>
-        <div className="grid grid-cols-3 gap-6 mt-5">
-          {auctions.map((a) => (
-            <AuctionCard
-              key={a.id}
-              img={a.img}
-              title={a.title}
-              price={a.price}
-              status={a.status as "Activa" | "Pendiente" | "Finalizada"}
-              onClick={() => router.push(`/dashboard/subastas/${a.id}`)} // redirige al detalle
-            />
-          ))}
-        </div>
 
-        {/* Solicitudes de Subastas */}
-        <h2 className="text-2xl font-bold mt-10">Solicitudes de Subastas</h2>
-        <div className="grid grid-cols-3 gap-6 mt-5">
-          {requests.map((r) => (
-            <AuctionCard
-              key={r.id}
-              img={r.img}
-              title={r.title}
-              price={r.price}
-              status="Pendiente"
-              onClick={() => router.push(`/dashboard/subastas/${r.id}`)} // redirige al detalle
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <p className="text-gray-300 mt-5">Cargando subastas...</p>
+        ) : (
+          <div className="grid grid-cols-3 gap-6 mt-5">
+            {auctions.map((a) => (
+              <AuctionCard
+                key={a.id}
+                img={a.imageUrl}
+                title={a.title}
+                price={`$${a.currentPrice}`}
+                status={
+                  a.status === "active"
+                    ? "Activa"
+                    : a.status === "pending"
+                    ? "Pendiente"
+                    : "Finalizada"
+                }
+                onClick={() => router.push(`/dashboard/subastas/${a.id}`)}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
