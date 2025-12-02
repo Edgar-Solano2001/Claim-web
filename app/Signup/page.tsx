@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react'
 import Image from "next/image";
+import Link from "next/link";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'; // Importaciones de Google agregadas
 import { useRouter } from 'next/navigation';
 import { auth, db } from '@/lib/firebase-config';
@@ -267,22 +268,27 @@ export default function Signup() {
 
             {/* Checkboxes de Términos */}
             <div className="flex flex-col gap-3">
-              <p className="text-xs text-slate-600 text-center">Haz click para ver y aceptar los términos y condiciones</p>
+
+              <p className="text-xs text-slate-600 text-center">Haz click en los íconos para ver y aceptar los términos y condiciones</p>
               <div className="flex gap-4 justify-center">
-                <label className="flex flex-col items-center gap-2 cursor-pointer group">
-                  <input type="checkbox" name="termsAccepted" checked={formData.termsAccepted} onChange={handleInputChange} className="hidden" />
-                  <div className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center transition ${formData.termsAccepted ? 'bg-purple-600 border-purple-600' : 'bg-white border-slate-300 group-hover:border-purple-400'}`}>
-                    <svg className={`w-8 h-8 ${formData.termsAccepted ? 'text-white' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                  </div>
-                  <span className="text-xs font-medium text-slate-700">Términos</span>
-                </label>
-                <label className="flex flex-col items-center gap-2 cursor-pointer group">
-                  <input type="checkbox" name="conditionsAccepted" checked={formData.conditionsAccepted} onChange={handleInputChange} className="hidden" />
-                  <div className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center transition relative ${formData.conditionsAccepted ? 'bg-purple-600 border-purple-600' : 'bg-white border-slate-300 group-hover:border-purple-400'}`}>
-                    <svg className={`w-8 h-8 ${formData.conditionsAccepted ? 'text-white' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                  </div>
-                  <span className="text-xs font-medium text-slate-700">Condiciones</span>
-                </label>
+                <Link href="/terms" target="_blank">
+                  <label className="flex flex-col items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" name="termsAccepted" checked={formData.termsAccepted} onChange={handleInputChange} className="hidden" />
+                    <div className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center transition ${formData.termsAccepted ? 'bg-purple-600 border-purple-600' : 'bg-white border-slate-300 group-hover:border-purple-400'}`}>
+                      <svg className={`w-8 h-8 ${formData.termsAccepted ? 'text-white' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    </div>
+                    <span className="text-xs font-medium text-slate-700">Términos</span>
+                  </label>
+                </Link>
+                <Link href="/terms" target="_blank">
+                  <label className="flex flex-col items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" name="conditionsAccepted" checked={formData.conditionsAccepted} onChange={handleInputChange} className="hidden" />
+                    <div className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center transition relative ${formData.conditionsAccepted ? 'bg-purple-600 border-purple-600' : 'bg-white border-slate-300 group-hover:border-purple-400'}`}>
+                      <svg className={`w-8 h-8 ${formData.conditionsAccepted ? 'text-white' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    </div>
+                    <span className="text-xs font-medium text-slate-700">Condiciones</span>
+                  </label>
+                </Link>
               </div>
             </div>
 
