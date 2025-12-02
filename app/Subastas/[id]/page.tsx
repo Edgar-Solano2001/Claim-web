@@ -54,9 +54,9 @@ export default async function SubastaDetalle({ params }: PageProps) {
         }
       }
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error loading auction:", err);
-    error = err.message || "Error al cargar la subasta";
+    error = (err as Error).message || "Error al cargar la subasta";
   }
 
   if (error || !auction) {

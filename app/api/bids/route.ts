@@ -52,10 +52,12 @@ export async function GET(request: NextRequest) {
       { error: "Se requiere auctionId o userId" },
       { status: 400 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error al obtener pujas:", error);
+    const message =
+      error instanceof Error ? error.message : String(error ?? "Error desconocido");
     return NextResponse.json(
-      { error: error.message || "Error al obtener las pujas" },
+      { error: message || "Error al obtener las pujas" },
       { status: 500 }
     );
   }
@@ -88,10 +90,12 @@ export async function POST(request: NextRequest) {
 
     const bidId = await createBid(bidData);
     return NextResponse.json({ id: bidId, success: true }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error al crear puja:", error);
+    const message =
+      error instanceof Error ? error.message : String(error ?? "Error desconocido");
     return NextResponse.json(
-      { error: error.message || "Error al crear la puja" },
+      { error: message || "Error al crear la puja" },
       { status: 400 }
     );
   }

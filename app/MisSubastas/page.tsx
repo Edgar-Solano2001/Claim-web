@@ -61,9 +61,13 @@ export default function MisSubastasPage() {
 
       const data = await res.json();
       setAuctions(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error fetching user auctions:", err);
-      setError(err.message || "Error al cargar tus subastas.");
+      if (err instanceof Error) {
+        setError(err.message || "Error al cargar tus subastas.");
+      } else {
+        setError("Error al cargar tus subastas.");
+      }
     } finally {
       setLoading(false);
     }

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // Si se solicita específicamente todas las subastas o un estado específico
     if (status) {
-      auctions = await getAllAuctions(status as any);
+      auctions = await getAllAuctions(status);
     } else if (category) {
       // Obtener subastas por categoría
       const { getAuctionsByCategory } = await import("@/lib/models/auctions");
@@ -31,12 +31,12 @@ export async function GET(request: NextRequest) {
       auctions = await getActiveAuctions(limitCount);
     }
 
-    console.log(`📊 API /api/auctions: Retornando ${auctions?.length || 0} subastas`);
+    console.log(`API /api/auctions: Retornando ${auctions?.length || 0} subastas`);
     
     // Si no hay subastas, retornar array vacío en lugar de error
     return NextResponse.json(auctions || []);
   } catch (error: any) {
-    console.error("❌ Error al obtener las subastas:", error);
+    console.error("Error al obtener las subastas:", error);
     console.error("Detalles del error:", {
       code: error.code,
       message: error.message,

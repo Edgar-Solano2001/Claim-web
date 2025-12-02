@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import type { Category } from "@/lib/models/types";
@@ -68,20 +67,19 @@ export default function CrearSubastaPage() {
             error: errorData,
           });
         } catch (parseError) {
-          // Si no se puede parsear el JSON, usar el texto de la respuesta
-          const text = await response.text().catch(() => "");
-          console.error("Error al obtener categorías (sin JSON):", {
-            status: response.status,
-            statusText: response.statusText,
-            text,
-          });
-          errorMessage = text || errorMessage;
+          console.error("Error al parsear respuesta:", parseError);
+          errorMessage = `Error ${response.status}: ${response.statusText}`;
         }
         toast.error(errorMessage);
       }
-    } catch (error: any) {
+    } catch (error) {
+      if (error instanceof Error) {
       console.error("Error al obtener categorías (catch):", error);
       toast.error(error.message || "Error al cargar las categorías. Por favor, recarga la página.");
+      } else {
+      console.error("Error al obtener categorías (catch):", error);
+      toast.error("Error al cargar las categorías. Por favor, recarga la página.");
+      }
     } finally {
       setCategoriesLoading(false);
     }
@@ -218,9 +216,13 @@ export default function CrearSubastaPage() {
 
       toast.success("¡Subasta creada exitosamente!");
       router.push(`/Subastas/${data.id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error al crear subasta:", error);
-      toast.error(error.message || "Error al crear la subasta");
+      if (error instanceof Error) {
+        toast.error(error.message || "Error al crear la subasta");
+      } else {
+        toast.error("Error al crear la subasta");
+      }
     } finally {
       setLoading(false);
     }

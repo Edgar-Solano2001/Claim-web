@@ -16,7 +16,7 @@ interface BidWithAuction extends Bid {
     category: string;
     currentPrice: number;
     status: string;
-    endDate: Date | any;
+    endDate: Date;
   };
 }
 
@@ -51,9 +51,14 @@ export default function MisPujasPage() {
 
       const data = await response.json();
       setBids(data);
-    } catch (err: any) {
-      console.error("Error fetching bids:", err);
-      setError(err.message || "Error al cargar las pujas");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Error fetching bids:", err);
+        setError(err.message || "Error al cargar las pujas");
+      } else {
+        console.error("Unexpected error fetching bids:", err);
+        setError("Error al cargar las pujas");
+      }
     } finally {
       setLoading(false);
     }

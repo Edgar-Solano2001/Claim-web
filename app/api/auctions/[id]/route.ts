@@ -40,10 +40,11 @@ export async function GET(
     }
 
     return NextResponse.json(auction);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error al obtener subasta:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error al obtener la subasta";
     return NextResponse.json(
-      { error: error.message || "Error al obtener la subasta" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
