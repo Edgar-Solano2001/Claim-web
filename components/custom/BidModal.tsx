@@ -18,6 +18,7 @@ interface BidModalProps {
   auctionId: string;
   currentPrice: number;
   minimumBid?: number;
+  sellerId?: string;
   trigger?: React.ReactNode;
 }
 
@@ -25,9 +26,11 @@ export default function BidModal({
   auctionId,
   currentPrice,
   minimumBid,
+  sellerId,
   trigger,
 }: BidModalProps) {
   const { user } = useAuth();
+  const isOwner = sellerId && user?.uid === sellerId;
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
@@ -48,6 +51,12 @@ export default function BidModal({
       setTimeout(() => {
         router.push("/Login");
       }, 500);
+      return;
+    }
+
+    if (isOwner) {
+      toast.error("No puedes pujar en tu propia subasta");
+      setOpen(false);
       return;
     }
 
@@ -103,6 +112,11 @@ export default function BidModal({
   const handleQuickBid = (quickAmount: number) => {
     setAmount(quickAmount.toFixed(2));
   };
+
+  // Si el usuario es el dueño, no mostrar el botón de puja
+  if (isOwner) {
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

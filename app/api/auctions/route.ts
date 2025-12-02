@@ -1,12 +1,13 @@
 /** API para obtener y crear subastas */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getActiveAuctions, getAllAuctions, createAuction } from "@/lib/models/auctions";
+import { getActiveAuctions, getAllAuctions, createAuction, getFeaturedAuctions } from "@/lib/models/auctions";
 import type { AuctionCreateInput, AuctionStatus } from "@/lib/models/types";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    const featured = searchParams.get("featured");
     const status = searchParams.get("status");
     const limit = searchParams.get("limit");
     const category = searchParams.get("category");
@@ -14,8 +15,12 @@ export async function GET(request: NextRequest) {
 
     let auctions;
 
-    // Si se solicita específicamente todas las subastas o un estado específico
-    if (status) {
+    // Si se solicitan productos destacados
+    if (featured === "true") {
+      const limitCount = limit ? parseInt(limit) : 4;
+      auctions = await getFeaturedAuctions(limitCount);
+    } else if (status) {
+      // Si se solicita específicamente todas las subastas o un estado específico
       auctions = await getAllAuctions(status as AuctionStatus);
     } else if (category) {
       // Obtener subastas por categoría
@@ -24,7 +29,13 @@ export async function GET(request: NextRequest) {
     } else if (sellerId) {
       // Obtener subastas por vendedor
       const { getAuctionsBySeller } = await import("@/lib/models/auctions");
-      auctions = await getAuctionsBySeller(sellerId);
+      try {
+        auctions = await getAuctionsBySeller(sellerId);
+        console.log(`✅ API /api/auctions?sellerId=${sellerId}: Retornando ${auctions?.length || 0} subastas`);
+      } catch (error) {
+        console.error(`❌ Error al obtener subastas del vendedor ${sellerId}:`, error);
+        auctions = [];
+      }
     } else {
       // Por defecto, obtener solo subastas activas
       const limitCount = limit ? parseInt(limit) : undefined;

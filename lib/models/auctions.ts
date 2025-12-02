@@ -94,6 +94,11 @@ export async function createAuction(
     auction.location = auctionData.location.trim();
   }
 
+  // Agregar isFeatured si está definido
+  if (auctionData.isFeatured !== undefined) {
+    auction.isFeatured = Boolean(auctionData.isFeatured);
+  }
+
   const docRef = await addDoc(auctionsRef, auction);
   return docRef.id;
 }
@@ -278,6 +283,125 @@ export async function getActiveAuctions(
 }
 
 /**
+ * Obtiene subastas destacadas (isFeatured === true)
+ * @param limitCount Límite de resultados (opcional, por defecto 4)
+ * @returns Array de subastas destacadas activas
+ */
+export async function getFeaturedAuctions(
+  limitCount: number = 4
+): Promise<Auction[]> {
+  try {
+    const auctionsRef = collection(db, "auctions");
+    
+    // Consultar subastas destacadas y activas
+    try {
+      const constraints: QueryConstraint[] = [
+        where("isFeatured", "==", true),
+        where("status", "==", "active"),
+        orderBy("createdAt", "desc"),
+        limit(limitCount),
+      ];
+
+      const q = query(auctionsRef, ...constraints);
+      const querySnapshot = await getDocs(q);
+
+      const auctions = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        // Asegurar que todos los campos requeridos existan
+        const auction: Partial<Auction> & { id: string } = {
+          id: doc.id,
+          title: data.title || "",
+          description: data.description || "",
+          category: data.category || "sin-categoria",
+          sellerId: data.sellerId || "",
+          initialPrice: data.initialPrice || 0,
+          currentPrice: data.currentPrice || data.initialPrice || 0,
+          image: data.image || "",
+          images: data.images || [],
+          status: data.status || "active",
+          startDate: data.startDate,
+          endDate: data.endDate,
+          currentBids: data.currentBids || 0,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          isFeatured: data.isFeatured === true,
+        };
+        
+        // Campos opcionales
+        if (data.reservePrice !== undefined) auction.reservePrice = data.reservePrice;
+        if (data.currentBidId) auction.currentBidId = data.currentBidId;
+        if (data.location) auction.location = data.location;
+        
+        auction.endsIn = calculateTimeRemaining(data.endDate);
+        return auction as Auction;
+      });
+      
+      console.log(`✅ getFeaturedAuctions: Encontradas ${auctions.length} subastas destacadas`);
+      return auctions;
+    } catch (error: unknown) {
+      // Si falla por falta de índice, intentar sin orderBy
+      const firebaseError = error as { code?: string; message?: string };
+      if (firebaseError.code === "failed-precondition" || firebaseError.message?.includes("index")) {
+        console.warn("Índice compuesto no encontrado para getFeaturedAuctions, usando consulta simple");
+        const constraints: QueryConstraint[] = [
+          where("isFeatured", "==", true),
+          where("status", "==", "active"),
+        ];
+
+        if (limitCount) {
+          constraints.push(limit(limitCount));
+        }
+
+        const q = query(auctionsRef, ...constraints);
+        const querySnapshot = await getDocs(q);
+
+        // Ordenar manualmente en memoria por fecha de creación
+        const auctions = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          const auction: Partial<Auction> & { id: string } = {
+            id: doc.id,
+            title: data.title || "",
+            description: data.description || "",
+            category: data.category || "sin-categoria",
+            sellerId: data.sellerId || "",
+            initialPrice: data.initialPrice || 0,
+            currentPrice: data.currentPrice || data.initialPrice || 0,
+            image: data.image || "",
+            images: data.images || [],
+            status: data.status || "active",
+            startDate: data.startDate,
+            endDate: data.endDate,
+            currentBids: data.currentBids || 0,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+            isFeatured: data.isFeatured === true,
+          };
+          
+          if (data.reservePrice !== undefined) auction.reservePrice = data.reservePrice;
+          if (data.currentBidId) auction.currentBidId = data.currentBidId;
+          if (data.location) auction.location = data.location;
+          
+          auction.endsIn = calculateTimeRemaining(data.endDate);
+          return auction as Auction;
+        });
+
+        // Ordenar por createdAt descendente
+        return auctions.sort((a, b) => {
+          const dateA = timestampToDate(a.createdAt).getTime();
+          const dateB = timestampToDate(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+      }
+      throw error;
+    }
+  } catch (error: unknown) {
+    console.error("Error en getFeaturedAuctions:", error);
+    // Retornar array vacío en lugar de lanzar error
+    return [];
+  }
+}
+
+/**
  * Obtiene subastas por categoría
  * @param categoryId ID de la categoría
  * @param status Estado de la subasta (opcional, por defecto "active")
@@ -315,23 +439,120 @@ export async function getAuctionsByCategory(
 export async function getAuctionsBySeller(
   sellerId: string
 ): Promise<Auction[]> {
-  const auctionsRef = collection(db, "auctions");
-  const q = query(
-    auctionsRef,
-    where("sellerId", "==", sellerId),
-    orderBy("createdAt", "desc")
-  );
+  try {
+    const auctionsRef = collection(db, "auctions");
+    
+    // Intentar consulta con índice compuesto primero
+    try {
+      const q = query(
+        auctionsRef,
+        where("sellerId", "==", sellerId),
+        orderBy("createdAt", "desc")
+      );
 
-  const querySnapshot = await getDocs(q);
+      const querySnapshot = await getDocs(q);
 
-  return querySnapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-      endsIn: calculateTimeRemaining(data.endDate),
-    } as Auction;
-  });
+      const auctions = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        const auction: Partial<Auction> & { id: string } = {
+          id: doc.id,
+          title: data.title || "",
+          description: data.description || "",
+          category: data.category || "sin-categoria",
+          sellerId: data.sellerId || "",
+          initialPrice: data.initialPrice || 0,
+          currentPrice: data.currentPrice || data.initialPrice || 0,
+          image: data.image || "",
+          images: data.images || [],
+          status: data.status || "active",
+          startDate: data.startDate,
+          endDate: data.endDate,
+          currentBids: data.currentBids || 0,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+        };
+        
+        // Campos opcionales
+        if (data.reservePrice !== undefined) auction.reservePrice = data.reservePrice;
+        if (data.currentBidId) auction.currentBidId = data.currentBidId;
+        if (data.location) auction.location = data.location;
+        if (data.isFeatured !== undefined) auction.isFeatured = data.isFeatured === true;
+        
+        auction.endsIn = calculateTimeRemaining(data.endDate);
+        return auction as Auction;
+      });
+      
+      console.log(`✅ getAuctionsBySeller: Encontradas ${auctions.length} subastas para el vendedor ${sellerId}`);
+      return auctions;
+    } catch (error: unknown) {
+      // Si falla por falta de índice, intentar sin orderBy
+      const firebaseError = error as { code?: string; message?: string };
+      if (firebaseError.code === "failed-precondition" || firebaseError.message?.includes("index")) {
+        console.warn("Índice compuesto no encontrado para getAuctionsBySeller, usando consulta simple");
+        const q = query(
+          auctionsRef,
+          where("sellerId", "==", sellerId)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        // Ordenar manualmente en memoria por fecha de creación
+        const auctions = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          const auction: Partial<Auction> & { id: string } = {
+            id: doc.id,
+            title: data.title || "",
+            description: data.description || "",
+            category: data.category || "sin-categoria",
+            sellerId: data.sellerId || "",
+            initialPrice: data.initialPrice || 0,
+            currentPrice: data.currentPrice || data.initialPrice || 0,
+            image: data.image || "",
+            images: data.images || [],
+            status: data.status || "active",
+            startDate: data.startDate,
+            endDate: data.endDate,
+            currentBids: data.currentBids || 0,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+          };
+          
+          if (data.reservePrice !== undefined) auction.reservePrice = data.reservePrice;
+          if (data.currentBidId) auction.currentBidId = data.currentBidId;
+          if (data.location) auction.location = data.location;
+          if (data.isFeatured !== undefined) auction.isFeatured = data.isFeatured === true;
+          
+          auction.endsIn = calculateTimeRemaining(data.endDate);
+          return auction as Auction;
+        });
+
+        // Ordenar por createdAt descendente manualmente
+        return auctions.sort((a, b) => {
+          const dateA = timestampToDate(a.createdAt).getTime();
+          const dateB = timestampToDate(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+      }
+      throw error;
+    }
+  } catch (error: unknown) {
+    console.error("Error en getAuctionsBySeller:", error);
+    const firebaseError = error as { code?: string; message?: string };
+    
+    // Si es un error de índice, proporcionar información útil
+    if (firebaseError.code === "failed-precondition") {
+      console.error(
+        "❌ Error: Falta el índice compuesto para getAuctionsBySeller.\n" +
+        "Crea un índice en Firestore con:\n" +
+        "- Campo: sellerId (Ascendente)\n" +
+        "- Campo: createdAt (Descendente)\n" +
+        "Consulta: FIRESTORE_INDEXES.md para más detalles"
+      );
+    }
+    
+    // Retornar array vacío en lugar de lanzar error para que la página no falle
+    return [];
+  }
 }
 
 /**

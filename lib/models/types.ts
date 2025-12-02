@@ -102,6 +102,8 @@ export interface Auction {
   currentBidId?: string; // ID de la puja ganadora actual
   currentBids: number; // Número total de pujas
   
+  // Destacado
+  isFeatured?: boolean; // Si la subasta está destacada
   
   // Metadatos
   createdAt: Date | Timestamp;
@@ -123,6 +125,7 @@ export interface AuctionCreateInput {
   startDate: Date | Timestamp;
   endDate: Date | Timestamp;
   location?: string;
+  isFeatured?: boolean;
 }
 
 export interface AuctionUpdateInput {
@@ -136,6 +139,7 @@ export interface AuctionUpdateInput {
   endDate?: Date | Timestamp;
   status?: AuctionStatus;
   location?: string;
+  isFeatured?: boolean;
 }
 
 // ============================================================================
@@ -248,13 +252,13 @@ export function timestampToDate(
   }
   
   // Si es Timestamp de Firestore, convertir a Date
-  if (timestamp && typeof timestamp.toDate === 'function') {
-    return timestamp.toDate();
+  if (timestamp && typeof (timestamp as { toDate: () => Date }).toDate === 'function') {
+    return (timestamp as { toDate: () => Date }).toDate();
   }
   
   // Si tiene propiedades seconds y nanoseconds (Timestamp de Firestore serializado)
-  if (timestamp && typeof timestamp.seconds === 'number') {
-    return new Date(timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1000000);
+  if (timestamp && typeof (timestamp as { seconds: number }).seconds === 'number') {
+    return new Date((timestamp as { seconds: number }).seconds * 1000 + ((timestamp as { nanoseconds: number }).nanoseconds || 0) / 1000000);
   }
   
   // Si es un número (timestamp en milisegundos)

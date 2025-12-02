@@ -12,8 +12,16 @@ interface ProductsGalleryProps {
 }
 
 export default function ProductsGallery({ mainImage, images = [], title }: ProductsGalleryProps) {
-  // Combinar imagen principal con imágenes adicionales
-  const allImages = [mainImage, ...images].filter(Boolean);
+  // Filtrar imágenes duplicadas y vacías
+  const uniqueImages = images.filter((img, idx, arr) => 
+    img && img !== mainImage && arr.indexOf(img) === idx
+  );
+  
+  // Combinar imagen principal con imágenes adicionales únicas
+  const allImages = mainImage 
+    ? [mainImage, ...uniqueImages].filter(Boolean)
+    : uniqueImages.filter(Boolean);
+  
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Si no hay imágenes, usar la principal

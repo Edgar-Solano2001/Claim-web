@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { timestampToDate, type Bid, type BidWithUser, type AuctionWithBids } from "@/lib/models/types";
+import { timestampToDate, type Bid, type BidWithUser, type AuctionWithBids, type User } from "@/lib/models/types";
 import { getCategoryName } from "@/lib/models/categories";
+import { getUser } from "@/lib/models/users";
 import ProductsGallery from "@/components/custom/ProductsGallery";
-import BidModal from "@/components/custom/BidModal";
+import BidSection from "@/components/custom/BidSection";
 import UserAvatar from "@/components/custom/UserAvatar";
 
 // Función helper para obtener la URL base
@@ -27,6 +28,7 @@ export default async function SubastaDetalle({ params }: PageProps) {
   let auction: AuctionWithBids | null = null;
   let bids: BidWithUser[] = [];
   let categoryName = "";
+  let seller: User | null = null;
   let error: string | null = null;
 
   try {
@@ -52,6 +54,14 @@ export default async function SubastaDetalle({ params }: PageProps) {
         } catch (err) {
           categoryName = auction.category; // Usar el ID si no se puede obtener el nombre
         }
+        
+        // Obtener información del vendedor
+        try {
+          seller = await getUser(auction.sellerId);
+        } catch (err) {
+          console.error("Error obteniendo información del vendedor:", err);
+          seller = null;
+        }
       }
     }
   } catch (err: unknown) {
@@ -73,6 +83,7 @@ export default async function SubastaDetalle({ params }: PageProps) {
   const endDate = timestampToDate(auction.endDate);
   const now = new Date();
   const isActive = auction.status === "active" && endDate > now;
+  const isEnded = auction.status === "ended" || endDate <= now;
   
   // Calcular tiempo restante
   const diff = endDate.getTime() - now.getTime();
@@ -110,6 +121,14 @@ export default async function SubastaDetalle({ params }: PageProps) {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                   </span>
                   Activa
+                </Badge>
+              )}
+              {isEnded && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-gray-100 text-gray-700 border-2 border-gray-300 font-semibold px-4 py-1.5"
+                >
+                  Finalizada
                 </Badge>
               )}
             </div>
@@ -177,24 +196,44 @@ export default async function SubastaDetalle({ params }: PageProps) {
                   </div>
                 </div>
 
-                {/* Botón de puja */}
-                {isActive && (
-                  <BidModal
-                    auctionId={auction.id}
-                    currentPrice={auction.currentPrice}
-                    minimumBid={auction.currentPrice + 1}
-                  />
-                )}
-
-                {!isActive && (
-                  <div className="p-4 bg-gray-100 rounded-xl border border-gray-200">
-                    <p className="text-sm text-gray-600 text-center font-medium">
-                      Esta subasta ha finalizado
-                    </p>
-                  </div>
-                )}
+                {/* Sección de puja */}
+                <BidSection
+                  auctionId={auction.id}
+                  currentPrice={auction.currentPrice}
+                  minimumBid={auction.currentPrice + 1}
+                  sellerId={auction.sellerId}
+                  isActive={isActive}
+                />
               </CardContent>
             </Card>
+
+            {/* Información del vendedor */}
+            {seller && (
+              <Card className="bg-white border border-gray-200 shadow-md rounded-xl">
+                <CardHeader>
+                  <h3 className="font-semibold text-gray-800">Vendedor</h3>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <UserAvatar
+                      photoURL={seller.photoURL}
+                      displayName={seller.displayName}
+                      username={seller.username}
+                      size={64}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-lg text-gray-900 truncate">
+                        {seller.displayName || seller.username || 'Usuario'}
+                      </h4>
+                      {seller.username && seller.username !== seller.displayName && (
+                        <p className="text-sm text-gray-500 truncate">@{seller.username}</p>
+                      )}
+                      
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Detalles adicionales */}
             <Card className="bg-white border border-gray-200 shadow-md rounded-xl">
@@ -231,6 +270,28 @@ export default async function SubastaDetalle({ params }: PageProps) {
           </div>
         </div>
 
+        {/* Mensaje de ganador cuando la subasta terminó */}
+        {isEnded && bids.length > 0 && (
+          <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 shadow-lg rounded-2xl overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">🏆</div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-green-800 mb-1">
+                    Subasta Finalizada
+                  </h3>
+                  <p className="text-green-700">
+                    {bids[0]?.user?.displayName || bids[0]?.user?.username || 'Usuario desconocido'} ganó esta subasta con una puja de{" "}
+                    <span className="font-bold">
+                      ${bids[0]?.amount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Historial de pujas */}
         {bids.length > 0 && (
           <Card className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
@@ -241,9 +302,11 @@ export default async function SubastaDetalle({ params }: PageProps) {
             <CardContent className="p-0">
               <div className="divide-y divide-gray-100">
                 {bids.slice(0, 10).map((bid, idx) => {
-                  // Determinar si es la puja ganadora (la más alta y marcada como ganadora)
+                  // Determinar si es la puja ganadora: solo si la subasta terminó y es la puja con mayor valor (primera en la lista)
+                  // Las pujas ya vienen ordenadas por monto descendente, así que la primera (idx === 0) es la de mayor valor
                   const isHighestBid = idx === 0 && bids.length > 0;
-                  const isWinning = bid.isWinning && isHighestBid;
+                  // Solo mostrar como ganadora si la subasta terminó y es la puja más alta
+                  const isWinning = isEnded && isHighestBid;
                   
                   return (
                   <div
@@ -308,6 +371,16 @@ export default async function SubastaDetalle({ params }: PageProps) {
             <CardContent className="p-6 text-center">
               <p className="text-yellow-800 font-medium">
                 ⚡ Sé el primero en hacer una puja en esta subasta
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {bids.length === 0 && isEnded && (
+          <Card className="bg-gray-50 border border-gray-200 rounded-xl">
+            <CardContent className="p-6 text-center">
+              <p className="text-gray-700 font-medium">
+                Esta subasta finalizó sin pujas
               </p>
             </CardContent>
           </Card>

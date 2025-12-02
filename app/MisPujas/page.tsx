@@ -101,7 +101,7 @@ export default function MisPujasPage() {
             variant="outline"
             className="hidden sm:flex"
           >
-            🔄 Actualizar
+            Actualizar
           </Button>
         </div>
 

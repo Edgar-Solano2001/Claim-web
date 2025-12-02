@@ -29,6 +29,7 @@ export default function BidCard({ bid }: BidCardProps) {
   const endDate = timestampToDate(auction.endDate)
   const now = new Date()
   const isActive = auction.status === "active" && endDate > now
+  const isEnded = auction.status === "ended" || endDate <= now
   
   // Calcular tiempo restante
   const diff = endDate.getTime() - now.getTime()
@@ -44,17 +45,17 @@ export default function BidCard({ bid }: BidCardProps) {
   }
 
   const getStatusBadge = () => {
-    if (!isActive) {
-      if (bid.isWinning && bid.status === "winning") {
+    // Si la subasta terminó, mostrar si ganó o finalizó
+    if (isEnded) {
+      // Verificamos que sea la puja más alta comparando con el precio actual
+      const isWinningBid = bid.isWinning && bid.status === "winning" && bid.amount >= auction.currentPrice
+      if (isWinningBid) {
         return <Badge className="bg-green-100 text-green-700 border border-green-300">🏆 Ganaste</Badge>
       }
       return <Badge className="bg-gray-100 text-gray-700 border border-gray-300">Finalizada</Badge>
     }
     
-    if (bid.isWinning) {
-      return <Badge className="bg-green-100 text-green-700 border border-green-300">🏆 Ganadora</Badge>
-    }
-    
+    // Solo mostrar si está superada o activa
     if (bid.status === "outbid") {
       return <Badge className="bg-red-100 text-red-700 border border-red-300">Superada</Badge>
     }
