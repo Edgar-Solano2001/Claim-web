@@ -59,9 +59,10 @@ export async function createCategory(
     if (existing.exists()) {
       throw new Error("La categoría ya existe");
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Si el error es de conexión, continuar de todas formas
-    if (error.code === "unavailable" || error.message.includes("offline")) {
+    const firebaseError = error as { code?: string; message?: string };
+    if (firebaseError.code === "unavailable" || firebaseError.message?.includes("offline")) {
       console.warn("No se pudo verificar existencia, continuando...");
     } else if (error.message.includes("ya existe")) {
       throw error;

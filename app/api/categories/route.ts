@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const id = searchParams.get("id");
-    const activeOnly = searchParams.get("activeOnly") !== "false"; // Por defecto true
+    const activeOnly = searchParams.get("activeOnly") !== "false"; 
 
     if (id) {
       // Obtener una categoría específica
@@ -36,9 +36,9 @@ export async function GET(request: NextRequest) {
       } else {
         categories = await getAllCategories();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Si falla getActiveCategories por falta de índice, usar getAllCategories y filtrar
-      if (activeOnly && error.message?.includes("index")) {
+      if (activeOnly && error instanceof Error && error.message?.includes("index")) {
         console.warn("⚠️ Índice compuesto faltante, usando fallback con getAllCategories");
         const allCategories = await getAllCategories();
         categories = allCategories.filter((cat) => cat.isActive !== false);
@@ -48,10 +48,11 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(categories || []);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error al obtener categorías:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error al obtener las categorías";
     return NextResponse.json(
-      { error: error.message || "Error al obtener las categorías" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -80,10 +81,11 @@ export async function POST(request: NextRequest) {
 
     const categoryId = await createCategory(categoryData);
     return NextResponse.json({ id: categoryId, success: true }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error al crear categoría:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error al crear la categoría";
     return NextResponse.json(
-      { error: error.message || "Error al crear la categoría" },
+      { error: errorMessage },
       { status: 400 }
     );
   }

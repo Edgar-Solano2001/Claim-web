@@ -23,9 +23,10 @@ export async function createCategoryForSeed(
     if (existing.exists()) {
       throw new Error("La categoría ya existe");
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Si el error es de conexión, continuar de todas formas
-    if (error.code === "unavailable" || error.message?.includes("offline")) {
+    const firebaseError = error as { code?: string; message?: string };
+    if (firebaseError.code === "unavailable" || firebaseError.message?.includes("offline")) {
       // Continuar e intentar crear
     } else if (error.message?.includes("ya existe")) {
       throw error;
@@ -33,7 +34,7 @@ export async function createCategoryForSeed(
     // Para otros errores, continuar e intentar crear
   }
 
-  const category: Record<string, any> = {
+  const category: Record<string, unknown> = {
     name: String(categoryData.name).trim(),
     slug: String(categoryData.slug).trim(),
     isActive: categoryData.isActive !== undefined ? Boolean(categoryData.isActive) : true,
@@ -60,7 +61,7 @@ export async function createUserForSeed(
 ): Promise<string> {
   const userRef = doc(db, "users", userData.id);
 
-  const user: Record<string, any> = {
+  const user: Record<string, unknown> = {
     email: userData.email || "",
     username: userData.username || "",
     displayName: userData.displayName || "",
@@ -79,7 +80,7 @@ export async function createUserForSeed(
   };
 
   if (userData.address && typeof userData.address === "object") {
-    const address: Record<string, any> = {};
+    const address: Record<string, unknown> = {};
     if (userData.address.street) address.street = userData.address.street;
     if (userData.address.city) address.city = userData.address.city;
     if (userData.address.state) address.state = userData.address.state;

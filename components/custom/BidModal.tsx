@@ -91,9 +91,10 @@ export default function BidModal({
       setTimeout(() => {
         router.refresh();
       }, 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error al hacer puja:", error);
-      toast.error(error.message || "Error al realizar la puja");
+      const errorMessage = error instanceof Error ? error.message : "Error al realizar la puja";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

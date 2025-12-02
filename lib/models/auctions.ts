@@ -185,7 +185,7 @@ export async function getActiveAuctions(
       const auctions = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         // Asegurar que todos los campos requeridos existan
-        const auction: any = {
+        const auction: Partial<Auction> & { id: string } = {
           id: doc.id,
           title: data.title || "",
           description: data.description || "",
@@ -214,9 +214,10 @@ export async function getActiveAuctions(
       
       console.log(`✅ getActiveAuctions: Encontradas ${auctions.length} subastas activas`);
       return auctions;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Si falla por falta de índice, intentar sin orderBy
-      if (error.code === "failed-precondition" || error.message?.includes("index")) {
+      const firebaseError = error as { code?: string; message?: string };
+      if (firebaseError.code === "failed-precondition" || firebaseError.message?.includes("index")) {
         console.warn("Índice compuesto no encontrado, usando consulta simple");
         const constraints: QueryConstraint[] = [
           where("status", "==", "active"),
@@ -233,7 +234,7 @@ export async function getActiveAuctions(
         const auctions = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           // Asegurar que todos los campos requeridos existan
-          const auction: any = {
+          const auction: Partial<Auction> & { id: string } = {
             id: doc.id,
             title: data.title || "",
             description: data.description || "",
@@ -269,7 +270,7 @@ export async function getActiveAuctions(
       }
       throw error;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error en getActiveAuctions:", error);
     // Retornar array vacío en lugar de lanzar error
     return [];

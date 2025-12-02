@@ -14,9 +14,10 @@ import {
   serverTimestamp,
   Timestamp,
   writeBatch,
+  QueryConstraint,
 } from "firebase/firestore";
 import { db } from "../firebase-config";
-import type { Bid, BidCreateInput, BidStatus, BidWithUser } from "./types";
+import type { Bid, BidCreateInput, BidStatus, BidWithUser, Auction } from "./types";
 import {
   getAuction,
   updateAuctionCurrentBid,
@@ -168,7 +169,7 @@ export async function getBidsByAuction(
   limitCount?: number
 ): Promise<Bid[]> {
   const bidsRef = collection(db, "auctions", auctionId, "bids");
-  const constraints: any[] = [orderBy("amount", "desc")];
+  const constraints: QueryConstraint[] = [orderBy("amount", "desc")];
 
   if (limitCount) {
     constraints.push(limit(limitCount));
@@ -235,7 +236,7 @@ export async function getBidsByUser(
   limitCount?: number
 ): Promise<Bid[]> {
   const bidsRef = collection(db, "users", userId, "bids");
-  const constraints: any[] = [orderBy("timestamp", "desc")];
+  const constraints: QueryConstraint[] = [orderBy("timestamp", "desc")];
 
   if (limitCount) {
     constraints.push(limit(limitCount));
@@ -259,7 +260,7 @@ export async function getBidsByUser(
 export async function getBidsByUserWithAuction(
   userId: string,
   limitCount?: number
-): Promise<(Bid & { auction: any })[]> {
+): Promise<(Bid & { auction: Auction | null })[]> {
   const bids = await getBidsByUser(userId, limitCount);
   
   // Obtener información de la subasta para cada puja

@@ -12,6 +12,7 @@ import {
   limit,
   serverTimestamp,
   Timestamp,
+  QueryConstraint,
 } from "firebase/firestore";
 import { db } from "../firebase-config";
 import type { ViewHistory, ViewHistoryCreateInput } from "./types";
@@ -124,7 +125,7 @@ export async function getRecentViewHistory(
   dateLimit.setDate(dateLimit.getDate() - days);
   const timestampLimit = Timestamp.fromDate(dateLimit);
 
-  const constraints: any[] = [
+  const constraints: QueryConstraint[] = [
     where("viewedAt", ">=", timestampLimit),
     orderBy("viewedAt", "desc"),
   ];

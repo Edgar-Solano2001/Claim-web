@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getActiveAuctions, getAllAuctions, createAuction } from "@/lib/models/auctions";
-import type { AuctionCreateInput } from "@/lib/models/types";
+import type { AuctionCreateInput, AuctionStatus } from "@/lib/models/types";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // Si se solicita específicamente todas las subastas o un estado específico
     if (status) {
-      auctions = await getAllAuctions(status);
+      auctions = await getAllAuctions(status as AuctionStatus);
     } else if (category) {
       // Obtener subastas por categoría
       const { getAuctionsByCategory } = await import("@/lib/models/auctions");
@@ -35,12 +35,16 @@ export async function GET(request: NextRequest) {
     
     // Si no hay subastas, retornar array vacío en lugar de error
     return NextResponse.json(auctions || []);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error al obtener las subastas:", error);
-    console.error("Detalles del error:", {
-      code: error.code,
+    const errorDetails = error instanceof Error ? {
       message: error.message,
       stack: error.stack,
+    } : {};
+    const firebaseError = error as { code?: string };
+    console.error("Detalles del error:", {
+      code: firebaseError.code,
+      ...errorDetails,
     });
     
     // Retornar array vacío en lugar de error para que la página no falle
@@ -115,10 +119,11 @@ export async function POST(request: NextRequest) {
 
     const auctionId = await createAuction(auctionData);
     return NextResponse.json({ id: auctionId, success: true }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error al crear subasta:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error al crear la subasta";
     return NextResponse.json(
-      { error: error.message || "Error al crear la subasta" },
+      { error: errorMessage },
       { status: 400 }
     );
   }

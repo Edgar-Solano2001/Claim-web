@@ -239,7 +239,9 @@ export interface UserWithStats extends User {
 }
 
 // Helper para convertir Timestamp a Date
-export function timestampToDate(timestamp: Date | Timestamp | any): Date {
+export function timestampToDate(
+  timestamp: Date | Timestamp | { seconds: number; nanoseconds?: number } | string | number
+): Date {
   // Si ya es Date, retornarlo
   if (timestamp instanceof Date) {
     return timestamp;
@@ -271,7 +273,9 @@ export function timestampToDate(timestamp: Date | Timestamp | any): Date {
 }
 
 // Helper para calcular tiempo restante
-export function calculateTimeRemaining(endDate: Date | Timestamp | any): string {
+export function calculateTimeRemaining(
+  endDate: Date | Timestamp | { seconds: number; nanoseconds?: number } | string | number
+): string {
   try {
     const end = timestampToDate(endDate);
     
