@@ -24,7 +24,7 @@ export default function Hero() {
               oportunidades.
             </p>
 
-            <Link href="/Subastas" className="bg-purple-700 hover:bg-purple-600 text-white font-semibold px-6 py-3 rounded-lg transition">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition">
               Explorar Subastas
             </Link>
           </div>
