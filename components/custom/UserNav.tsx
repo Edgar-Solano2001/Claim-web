@@ -68,6 +68,7 @@ export function UserNav() {
       await signOut(auth);
       toast.success("Sesión cerrada correctamente");
     } catch (error) {
+      console.error("Error al cerrar sesión:", error);
       toast.error("Error al cerrar sesión");
     }
   };

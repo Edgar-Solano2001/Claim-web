@@ -80,7 +80,7 @@ export default function Signup() {
       setSuccess('¡Inicio de sesión con Google exitoso!');
       toast.success('Bienvenido');
       router.push('/Dashboard'); // Redirige a donde necesites
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setError('Error al iniciar sesión con Google. Intente nuevamente.');
       toast.error('Error con Google');
@@ -183,14 +183,17 @@ export default function Signup() {
         router.push('/Login');
       }, 2000);
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error al registrar', error);
       
       // Errores en Firebase
       let msg = 'Ocurrió un error al registrar el usuario.';
-      if (error.code === 'auth/email-already-in-use') msg = 'El correo electrónico ya está registrado.';
-      if (error.code === 'auth/weak-password') msg = 'La contraseña debe tener al menos 6 caracteres.';
-      if (error.code === 'auth/invalid-email') msg = 'El formato del correo no es válido.';
+      if (error instanceof Error && 'code' in error) {
+      const firebaseError = error as { code: string };
+      if (firebaseError.code === 'auth/email-already-in-use') msg = 'El correo electrónico ya está registrado.';
+      if (firebaseError.code === 'auth/weak-password') msg = 'La contraseña debe tener al menos 6 caracteres.';
+      if (firebaseError.code === 'auth/invalid-email') msg = 'El formato del correo no es válido.';
+      }
       
       setError(msg);
       toast.error(msg);

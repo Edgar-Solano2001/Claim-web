@@ -7,6 +7,7 @@ import { auth, db } from '@/lib/firebase-config';
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { FirebaseError } from 'firebase/app';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -45,17 +46,20 @@ export default function Login() {
       
       toast.success('Inicio de sesión exitoso');
       //Actualizar la propiedad lastLogin del usuario
+      
       await updateDoc(doc(db, 'users', auth.currentUser?.uid || ''), {
-        lastLogin: serverTimestamp()
+        lastLoginAt: serverTimestamp()
       });
+
       router.push('/');
       
-    } catch (error: any) {
-      console.error('Error login:', error.code);
+    } catch (error) {
+      const firebaseError = error as FirebaseError;
+      console.error('Error login:', firebaseError.code);
       let msg = 'Error al iniciar sesión. Verifique sus datos.';
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+      if (firebaseError.code === 'auth/invalid-credential' || firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password') {
         msg = 'Correo electrónico o contraseña incorrectos.';
-      } else if (error.code === 'auth/too-many-requests') {
+      } else if (firebaseError.code === 'auth/too-many-requests') {
         msg = 'Demasiados intentos fallidos. Intente más tarde.';
       }
 

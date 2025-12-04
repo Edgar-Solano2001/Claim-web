@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
 
@@ -25,7 +26,7 @@ export default function Hero() {
 
             <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition">
               Explorar Subastas
-            </button>
+            </Link>
           </div>
 
           {/* Carrusel */}

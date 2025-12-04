@@ -71,11 +71,11 @@ export default function Navbar() {
               <Link href="/" className="text-sm font-medium text-purple-700 dark:text-purple-200 transition transform hover:-translate-y-1 hover:text-purple-600 dark:hover:text-purple-100 hover:underline hover:underline-offset-4 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded">
                 Inicio
               </Link>
-              <Link href="/subastas" className="text-sm font-medium text-purple-700 dark:text-purple-200 transition transform hover:-translate-y-1 hover:text-purple-600 dark:hover:text-purple-100 hover:underline hover:underline-offset-4 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded">
+              <Link href="/MisPujas" className="text-sm font-medium text-purple-700 dark:text-purple-200 transition transform hover:-translate-y-1 hover:text-purple-600 dark:hover:text-purple-100 hover:underline hover:underline-offset-4 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded">
                 Mis Pujas
               </Link>
-              <Link href="/categorias" className="text-sm font-medium text-purple-700 dark:text-purple-200 transition transform hover:-translate-y-1 hover:text-purple-600 dark:hover:text-purple-100 hover:underline hover:underline-offset-4 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded">
-                Categorías
+              <Link href="/MisSubastas" className="text-sm font-medium text-purple-700 dark:text-purple-200 transition transform hover:-translate-y-1 hover:text-purple-600 dark:hover:text-purple-100 hover:underline hover:underline-offset-4 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded">
+                Mis Subastas
               </Link>
             </div>
 
@@ -115,7 +115,7 @@ export default function Navbar() {
           <div className="px-4 py-4 space-y-3">
              {/* ... tus enlaces móviles ... */}
             <Link href="/" className="block text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-600 dark:hover:text-purple-100 transition">Inicio</Link>
-            <Link href="/subastas" className="block text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-600 dark:hover:text-purple-100 transition">Mis Pujas</Link>
+            <Link href="/MisPujas" className="block text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-600 dark:hover:text-purple-100 transition">Mis Pujas</Link>
             <Link href="/categorias" className="block text-sm font-medium text-purple-700 dark:text-purple-200 hover:text-purple-600 dark:hover:text-purple-100 transition">Categorías</Link>
 
             <div className="pt-4 border-t border-purple-100 dark:border-purple-800 flex flex-col gap-2">
